@@ -1,57 +1,54 @@
-# CloudForge — Production AWS Infrastructure Automation with Terraform
+# CloudForge — AWS Infrastructure Automation with Terraform
 
-> Production-style AWS infrastructure automated using Terraform with modular architecture, remote state management, secure networking, IAM, Application Load Balancer, and private EC2 deployment.
+> A production-style AWS infrastructure project built using Terraform to automate networking, security, load balancing, and application deployment.
 
 ---
 
-## 📌 PROJECT OVERVIEW
+## 📌 About the Project
 
-CloudForge is a production-style AWS infrastructure automation project built using **Terraform**.
+**CloudForge** is an Infrastructure as Code (IaC) project where AWS infrastructure is created and managed using **Terraform** instead of manually creating resources through the AWS Console.
 
-The project demonstrates how to provision and manage a complete AWS environment using **Infrastructure as Code (IaC)** instead of manually creating resources through the AWS Console.
+The project creates a complete AWS environment containing:
 
-The infrastructure includes:
-
-- AWS VPC
-- Public and private subnets
+- VPC
+- Public and Private Subnets
 - Internet Gateway
 - NAT Gateway
 - Route Tables
-- EC2
+- Security Groups
 - Application Load Balancer
 - Target Group
-- Security Groups
+- EC2 Instance
+- Nginx
 - IAM
 - S3 Remote Terraform State
-- Terraform Modules
-- Terraform State Refactoring using `moved` blocks
-- Nginx application deployment
 
-The final application is accessible through an **Application Load Balancer**, while the backend EC2 instance remains inside a **private subnet**.
+The main goal of this project is to understand how a real-world AWS application infrastructure can be designed, automated, secured, and maintained using Terraform.
 
 ---
 
-## 🎯 OBJECTIVES
+# 🎯 Project Objectives
 
 The main objectives of CloudForge are:
 
 - Automate AWS infrastructure using Terraform.
-- Understand AWS networking and subnet architecture.
-- Separate public and private infrastructure.
-- Deploy an application on a private EC2 instance.
-- Expose the application through an Application Load Balancer.
-- Implement secure Security Group rules.
-- Store Terraform state remotely in Amazon S3.
-- Organize infrastructure using reusable Terraform modules.
-- Safely refactor existing Terraform resources using `moved` blocks.
-- Validate infrastructure using Terraform plan and application health checks.
+- Understand AWS VPC networking.
+- Separate public and private resources.
+- Deploy the application server inside a private subnet.
+- Expose the application using an Application Load Balancer.
+- Control traffic using Security Groups.
+- Store Terraform state remotely using Amazon S3.
+- Organize Terraform code using reusable modules.
+- Safely refactor Terraform infrastructure without recreating AWS resources.
+- Validate the complete infrastructure and application.
 
 ---
 
-## 🏗️ ARCHITECTURE
+# 🏗️ Architecture
 
 ```text
                          INTERNET
+                             |
                              |
                              v
                   +----------------------+
@@ -60,41 +57,44 @@ The main objectives of CloudForge are:
                   |      Port 80         |
                   +----------+-----------+
                              |
+                             |
                              v
                   +----------------------+
                   |     Target Group     |
                   |       HTTP :80       |
                   +----------+-----------+
                              |
+                             |
                              v
                   +----------------------+
-                  |      Private EC2     |
-                  |        Nginx         |
-                  |       Port 80        |
+                  |      EC2 Instance    |
+                  |    Private Subnet    |
+                  |       Nginx :80      |
                   +----------------------+
 
-                  AWS VPC: 10.0.0.0/16
-                  |
-        +---------+---------+
-        |                   |
-        v                   v
-  PUBLIC SUBNETS       PRIVATE SUBNETS
-  10.0.1.0/24          10.0.11.0/24
-  10.0.2.0/24          10.0.12.0/24
-        |                   |
-        v                   v
-       ALB              EC2 + Nginx
-        |
-        v
- Internet Gateway
+                    AWS VPC
+                  10.0.0.0/16
+                       |
+              +--------+--------+
+              |                 |
+              v                 v
+        PUBLIC SUBNETS    PRIVATE SUBNETS
+        10.0.1.0/24       10.0.11.0/24
+        10.0.2.0/24       10.0.12.0/24
+              |                 |
+              v                 v
+             ALB              EC2
+              |
+              v
+        Internet Gateway
 
-Private Subnets
-       |
-       v
+Private EC2
+     |
+     v
  NAT Gateway
-       |
-       v
- Internet Gateway
-       |
-       v
+     |
+     v
+Internet Gateway
+     |
+     v
  Internet
